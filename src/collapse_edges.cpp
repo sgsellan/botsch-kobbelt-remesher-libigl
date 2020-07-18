@@ -19,6 +19,7 @@
 #include <igl/principal_curvature.h>
 #include <igl/collapse_edge.h>
 #include <igl/is_edge_manifold.h>
+#include <igl/edge_collapse_is_valid.h>
 #include <igl/C_STR.h>
 #include <igl/circulation.h>
 #include <igl/decimate.h>
@@ -110,7 +111,6 @@ void collapse_edges(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & f
                 return;
             }
         }
-        //std::cout << "Mathing..." << std::endl;
         // consider both directions to circulate
         for(int direction = 0;direction<2;direction++)
         {

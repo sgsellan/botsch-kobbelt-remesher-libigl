@@ -5,6 +5,8 @@
 #include <igl/writeOBJ.h>
 #include "split_edges_until_bound.h"
 #include <igl/unique_edge_map.h>
+#include <igl/edge_flaps.h>
+#include <igl/circulation.h>
 #include <igl/remove_duplicate_vertices.h>
 #include <iostream>
 
