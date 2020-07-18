@@ -21,7 +21,7 @@
 #include <igl/is_edge_manifold.h>
 #include <igl/edge_collapse_is_valid.h>
 #include <igl/C_STR.h>
-#include <igl/circulation.h>
+#include "circulation.h"
 #include <igl/decimate.h>
 #include <igl/shortest_edge_and_midpoint.h>
 #include <igl/infinite_cost_stopping_condition.h>
