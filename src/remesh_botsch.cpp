@@ -8,9 +8,10 @@
 #include <igl/edge_flaps.h>
 #include <igl/circulation.h>
 #include <igl/remove_duplicate_vertices.h>
+#include <igl/avg_edge_length.h>
 #include <iostream>
 
-void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & feature,Eigen::VectorXd & target,int iters){
+void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & target,int iters, Eigen::VectorXi & feature){
     Eigen::MatrixXd V0;
     Eigen::MatrixXi F0;
  
@@ -64,6 +65,40 @@ void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & fe
 
 }
 
+void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & target,int iters){
+	Eigen::VectorXi feature;
+	feature.resize(0);
+	remesh_botsch(V,F,target,iters,feature);
+} 
 
+void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & target){
+	int iters = 10;
+	remesh_botsch(V,F,target,iters);
+} 
+
+void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, double target_double,int iters){
+	Eigen::VectorXi feature;
+	feature.resize(0);
+	Eigen::VectorXd target;
+	int n = V.rows();
+	target = Eigen::VectorXd::Constant(n,target_double);
+	remesh_botsch(V,F,target,iters,feature);
+} 
+
+void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, double target_double){
+	int iters = 10;
+	Eigen::VectorXd target;
+	int n = V.rows();
+	target = Eigen::VectorXd::Constant(n,target_double);
+	remesh_botsch(V,F,target,iters);
+} 
+
+void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F){
+	double h = igl::avg_edge_length(V,F);
+	Eigen::VectorXd target;
+	int n = V.rows();
+	target = Eigen::VectorXd::Constant(n,h);
+	remesh_botsch(V,F,target);
+} 
 // g++ -I/usr/local/libigl/external/eigen -I/usr/local/libigl/include -std=c++11 -framework Accelerate main.cpp remesh_botsch.cpp -o main
 

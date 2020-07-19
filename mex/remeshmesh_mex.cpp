@@ -16,7 +16,7 @@
 #include <igl/matlab/prepare_lhs.h>
 #include <igl/matlab/validate_arg.h>
 #include "../src/remesh_botsch.h"
-
+#include <igl/avg_edge_length.h>
 
 // Los que tienen el tipo de objeto definido son input, el resto output??
 
@@ -27,8 +27,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
    // using namespace igl::copyleft::cgal;
     using namespace Eigen;
     MatrixXd V,U;
-    MatrixXi F,G,E,uE,EI,EF;
-    VectorXi EMAP,feature,I,J;
+    MatrixXi F,G;
+    VectorXi feature;
     VectorXd target;
     
     
@@ -37,16 +37,36 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     std::streambuf *outbuf = std::cout.rdbuf(&mout);
     
     
-    mexErrMsgTxt(nrhs>=2,"nrhs should be >= 2");
+    
     parse_rhs_double(prhs,V); // Aquí se pasa del prhs a la matriz V de Eigen
-    parse_rhs_index(prhs+1,F); // Aquí se pasa del prhs a la matriz F de Eigen
-    mexErrMsgTxt(V.cols()==3,"V must be #V by 3");
-    mexErrMsgTxt(F.cols()==3,"F must be #F by 3");
-    parse_rhs_index(prhs+2,feature);
-    parse_rhs_double(prhs+3,target);
-    int iters = (int)*mxGetPr(prhs[4]);
+    parse_rhs_index(prhs+1,F); 
+    
+    int iters = 10;
+    feature.resize(0); 
+    double h = igl::avg_edge_length(V,F);
+    int n = V.rows();
+    target = Eigen::VectorXd::Constant(n,h);
+   
+    // remeshmesh_mex(V,F,target,iters,feature); 
+    switch(nrhs)
+    {
+	    case 5:
+    		parse_rhs_index(prhs+4,feature);
+	    case 4:
+    		iters = (int)*mxGetPr(prhs[3]);
+	    case 3:
+    		parse_rhs_double(prhs+2,target);
+    }
 
-    remesh_botsch(V,F,feature,target,iters);
+	if(target.size()==1){
+    		VectorXd target_copy;
+		target_copy = Eigen::VectorXd::Constant(n,target(0));
+		target = target_copy;
+	}
+    
+	
+	
+    remesh_botsch(V,F,target,iters,feature);
     
     U = V;
     G = F;
