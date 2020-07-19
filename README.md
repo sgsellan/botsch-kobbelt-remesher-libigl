@@ -14,4 +14,8 @@ To run in command line, issue
 ./remeshmesh [input.obj] [output.obj] [-i num_iterations] [-h target_edge_length]
 ```
 To use within your own C++ code, simply include the header files in `src/` and
-use the function `remesh_botsch` as shown in `remesmesh.cpp`. 
+use the function `remesh_botsch` as shown in `remesmesh.cpp`.
+
+We also provide a mex wrapper for Matlab, which can be compiled by running
+`mex/build_mex` in the Matlab console. A precompiled Mac OS X mex binary can
+also be found in `precompiled/osx/bin`. 
