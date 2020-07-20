@@ -1,5 +1,5 @@
 # Libigl Botsch-Kobbelt Local Remesher
-mplementation of the local remesher from "A Remeshing Approach to Multiresolution Modeling" by M. Botsch and L. Kobbelt, to work with the libigl geometry processing library. 
+Implementation of the local remesher from "A Remeshing Approach to Multiresolution Modeling" by M. Botsch and L. Kobbelt, to work with the libigl geometry processing library. Can be used as a Command Line Tool, a C++ function and a Matlab mex function. 
 ## Installation
 In my MacOS I build this by running
 ```
@@ -13,7 +13,9 @@ To run in command line, issue
 ```
 ./remeshmesh [input.obj] [output.obj] [-i num_iterations] [-h target_edge_length]
 ```
-To use within your own C++ code, simply include the header files in `src/` and
+The mesh in input.obj must be closed and manifold.
+
+To use within your own C++ code, simply the header files in `src/` and
 use the function `remesh_botsch` as shown in `remesmesh.cpp`.
 
 I also provide a mex wrapper for Matlab, which can be compiled by running

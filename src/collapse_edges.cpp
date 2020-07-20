@@ -111,51 +111,46 @@ void collapse_edges(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & f
                 return;
             }
         }
-        // consider both directions to circulate
-        for(int direction = 0;direction<2;direction++)
-        {
             // consider each face
-            for(const int f : igl::circulation(e,direction,EMAP,EF,EI))
-            {
-                if (f < 0) {//?????
-                    cost = std::numeric_limits<double>::infinity();
-                    return;
-                }
-                //std::cout << f << std::endl;
-                if( f == 0 || f ==  igl::circulation(e,direction,EMAP,EF,EI).size()-1)
-                {
-                    
-                    // skip
-                    continue;
-                }
-                // Grab the three corners of the face
-                Eigen::RowVector3d p_before[3], p_after[3];
-                for(int c = 0;c<3;c++)
-                {
-                    // vertex index
-//                    std::cout << e << std::endl;
-//                    std::cout << f << std::endl;
-//                    std::cout << c << std::endl;
-                    const int v = F(f,c);
-                    if( v == E(e,0) || v == E(e,1))
-                    {
-                        p_after[c] = p;
-                    }else
-                    {
-                        p_after[c] = V.row(v);
-                    }
-                    p_before[c] = V.row(v);
-                }
-                const Eigen::RowVector3d n_before =
-                ((p_before[1]- p_before[0]).cross(p_before[2]- p_before[0])).normalized();
-                const Eigen::RowVector3d n_after =
-                ((p_after[1]- p_after[0]).cross(p_after[2]- p_after[0])).normalized();
-                if( n_before.dot(n_after) < n_after.norm()/2 )
-                   {
-                       cost = std::numeric_limits<double>::infinity();
-                   }
-                   }
-                   }
+	
+	//int eflip = E(e,0)>E(e,1);
+	//for(const int f : igl::circulation(e,eflip,EMAP,EF,EI))
+        //    {
+        //        //std::cout << f << std::endl;
+        //        if( f == 0 || f ==  igl::circulation(e,!eflip,EMAP,EF,EI).size()-1)
+        //        {
+        //            
+        //            // skip
+        //            continue;
+        //        }
+        //        // Grab the three corners of the face
+        //        Eigen::RowVector3d p_before[3], p_after[3];
+        //        for(int c = 0;c<3;c++)
+        //        {
+        //            // vertex index
+//      //              std::cout << e << std::endl;
+//      //              std::cout << f << std::endl;
+//      //              std::cout << c << std::endl;
+        //            const int v = F(f,c);
+        //            if( v == E(e,0) || v == E(e,1))
+        //            {
+        //                p_after[c] = p;
+        //            }else
+        //            {
+        //                p_after[c] = V.row(v);
+        //            }
+        //            p_before[c] = V.row(v);
+        //        }
+        //        const Eigen::RowVector3d n_before =
+        //        ((p_before[1]- p_before[0]).cross(p_before[2]- p_before[0])).normalized();
+        //        const Eigen::RowVector3d n_after =
+        //        ((p_after[1]- p_after[0]).cross(p_after[2]- p_after[0])).normalized();
+        //        if( n_before.dot(n_after) < n_after.norm()/2 )
+        //           {
+        //               cost = std::numeric_limits<double>::infinity();
+        //           }
+        //           }
+                   
         //std::cout << "Mathed!" << std::endl;
         
         
