@@ -3,7 +3,7 @@ Implementation of the local remesher from "A Remeshing Approach to Multiresoluti
 ## Installation
 In my MacOS I build this by running
 ```
-clang++ -std=c++11 -I libigl/include/ -I /usr/local/Cellar/eigen/ -DNDEBUG -framework Accelerate -O -o remeshmesh remeshmesh.cpp src/remesh_botsch.cpp src/collapse_edges.cpp src/split_edges_until_bound.cpp src/split_edges.cpp src/tangential_relaxation.cpp src/equalize_valences.cpp
+clang++ -std=c++11 -I libigl/include/ -I /usr/local/Cellar/eigen/ -DNDEBUG -framework Accelerate -O3 -o remeshmesh remeshmesh.cpp src/remesh_botsch.cpp src/collapse_edges.cpp src/split_edges_until_bound.cpp src/split_edges.cpp src/tangential_relaxation.cpp src/equalize_valences.cpp
 
 ```
 You can also find a Mac OS X precompiled binary in `precompiled/osx/bin`.
