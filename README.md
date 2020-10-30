@@ -11,9 +11,10 @@ You can also find a Mac OS X precompiled binary in `precompiled/osx/bin`.
 ## Use
 To run in command line, issue
 ```
-./remeshmesh [input.obj] [output.obj] [-i num_iterations] [-h target_edge_length]
+./remeshmesh [input.ext] [output.ext] [-i num_iterations] [-h target_edge_length]
 ```
-The mesh in input.obj must be closed and manifold.
+The mesh in input.obj must be closed and manifold. `ext` can be any of `obj`,
+`mesh`, `off`, `ply` and `stl`.
 
 To use within your own C++ code, simply the header files in `src/` and
 use the function `remesh_botsch` as shown in `remesmesh.cpp`.
