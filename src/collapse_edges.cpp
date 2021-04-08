@@ -40,21 +40,21 @@ void collapse_edges(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & f
     std::vector<int> small_edges;
     int e1,e2,f1,f2,e;
     int n = V.rows();
-    
-    
+
+
     int num_feature = feature.size();
     std::vector<std::vector<int>> A;
     igl::adjacency_list(F,A);
-    
+
     std::vector<bool> is_feature_vertex;
     is_feature_vertex.resize(n);
-    
+
     for (int s = 0; s < num_feature; s++) {
         is_feature_vertex[feature(s)] = true;
     }
-    
+
     //igl::is_edge_manifold(F);
-    
+
     std::function<bool(
                        const Eigen::MatrixXd &,
                        const Eigen::MatrixXi &,
@@ -70,7 +70,7 @@ void collapse_edges(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & f
                        const int,
                        const int,
                        const int)>  stopping_condition;
-    
+
     std::function<void(
                        const int,
                        const Eigen::MatrixXd &,
@@ -120,9 +120,9 @@ std::vector<int> N;
   const int m = EMAP.size()/3;
   assert(m*3 == EMAP.size());
   const auto & step = [&](
-    const int e, 
+    const int e,
     const int ff,
-    int & ne, 
+    int & ne,
     int & nf)
   {
     assert((EF(e,1) == ff || EF(e,0) == ff) && "e should touch ff");
@@ -131,7 +131,7 @@ std::vector<int> N;
     const int nv = EI(e,nside);
     // get next face
     nf = EF(e,nside);
-    // get next edge 
+    // get next edge
     const int dir = ccw?-1:1;
     ne = EMAP(nf+m*((nv+dir+3)%3));
   };
@@ -155,7 +155,7 @@ std::vector<int> N;
 	                //std::cout << f << std::endl;
 	                if( f == 0 || f ==  N.size()-1)
 	                {
-	                    
+
 	                    // skip
 	                    continue;
 	                }
@@ -186,16 +186,16 @@ std::vector<int> N;
 	                       cost = std::numeric_limits<double>::infinity();
 	                   }
 	                   }
-                   
-        //std::cout << "Mathed!" << std::endl;
-        
-        
-        };
-    
-    igl::infinite_cost_stopping_condition(shortest_edge_and_midpoint_lambda,stopping_condition);
-    
 
-     
+        //std::cout << "Mathed!" << std::endl;
+
+
+        };
+
+    igl::infinite_cost_stopping_condition(shortest_edge_and_midpoint_lambda,stopping_condition);
+
+
+
     //std::cout << "??" << std::endl;
     igl::decimate(V,F,shortest_edge_and_midpoint_lambda,stopping_condition,U,G,J,I);
     //std::cout << "!!" << std::endl;
@@ -214,19 +214,19 @@ std::vector<int> N;
             j = j+1;
         }
     }
-    
+
     // PLACEHOLDER
-    
+
     V = U;
     F = G;
     high = high_new;
     low = low_new;
     feature = feature_new;
-    
-    
-    
-    
-    
+
+
+
+
+
 }
 
 

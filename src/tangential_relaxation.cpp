@@ -35,51 +35,51 @@ void tangential_relaxation(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::Vecto
         I.setIdentity();
         Eigen::MatrixXd SV;
         Eigen::MatrixXi SVI,SVJ;
-        
-        
-        
-        
 
-        
+
+
+
+
+
         V_fixed = V;
-        
+
         int n = V.rows();
         int m = F.rows();
 
         //igl::doublearea(V,F,dblA);
-        
+
         //std::vector<double> vertex_areas;
         //vertex_areas.setZero(m);
-        
-        
+
+
         //for (int j = 0; j < m; j++) {
         //    vertex_areas[F(j,0)] = vertex_areas[F(j,0)] + (abs(dblA(j))/6);
         //    vertex_areas[F(j,1)] = vertex_areas[F(j,1)] + (abs(dblA(j))/6);
         //    vertex_areas[F(j,2)] = vertex_areas[F(j,2)] + (abs(dblA(j))/6);
         //}
-        
-        
+
+
         Eigen::MatrixXd N_before,N_after;
         igl::adjacency_list(F,A);
-        
-        
+
+
         int num_feat = feature.size();
         std::vector<bool> is_feature_vertex;
         is_feature_vertex.resize(n);
-        
+
         for (int s = 0; s < num_feat; s++) {
             is_feature_vertex[feature(s)] = true;
         }
-        
+
         Q.resize(n,3);
         P.resize(n,3);
         //           Eigen::MatrixXd N;
         igl::per_vertex_normals(V,F,N);
-        
+
         for(int i = 0; i < n; i++){
             bool is_feature = is_feature_vertex[i];
             if (!is_feature) {
-     
+
             Eigen::RowVector3d q,p;
             q.setZero();
             p.setZero();
@@ -96,9 +96,9 @@ void tangential_relaxation(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::Vecto
              p = (q.transpose()+(NN*(V.row(i).transpose() - q.transpose()))).transpose();
             // p = q;
              // std::cout << N.row(i) << std::endl;
-                
+
             V.row(i) = p;
-            
+
             // igl::per_face_normals(V_projected,F,Eigen::Vector3d(0,0,0),N_after);
     //            for (int j = 0; j < m ; j++) {
     //                if (N_before.row(j).dot(N_after.row(j)) < 0) {
@@ -106,14 +106,14 @@ void tangential_relaxation(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::Vecto
     //                    V.row(i) = V_fixed.row(i);
     //                }
     //            }
-                
+
             }
         }
 //        igl::remove_duplicate_vertices(V,0,SV,SVI,SVJ);
 //        std::cout << V.rows()-SV.rows() << std::endl;
         igl::point_mesh_squared_distance(V,V0,F0,sqrD,sqrI,V_projected);
-    
-        
+
+
     V = V_projected;
 //    igl::remove_duplicate_vertices(V,0,SV,SVI,SVJ);
 //    std::cout << V.rows()-SV.rows() << std::endl;

@@ -5,8 +5,8 @@
 using namespace std;
 
 int main(int argc, const char* argv[]){
-    
-	
+
+
     Eigen::MatrixXd V;
     Eigen::VectorXd target;
     Eigen::MatrixXi F;
