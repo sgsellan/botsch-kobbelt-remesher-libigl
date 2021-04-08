@@ -1,5 +1,6 @@
 # Libigl Botsch-Kobbelt Local Remesher
 Implementation of the local remesher from "A Remeshing Approach to Multiresolution Modeling" by M. Botsch and L. Kobbelt, to work with the libigl geometry processing library. Can be used as a Command Line Tool, a C++ function and a Matlab mex function. 
+
 ## Installation
 In my MacOS I build this by running
 ```
@@ -7,6 +8,15 @@ clang++ -std=c++11 -I libigl/include/ -I /usr/local/Cellar/eigen/ -DNDEBUG -fram
 
 ```
 You can also find a Mac OS X precompiled binary in `precompiled/osx/bin`.
+
+Or do the usual CMake dance:
+
+```
+mkdir build
+cd build
+cmake ..
+make -j
+```
 
 ## Use
 To run in command line, issue
