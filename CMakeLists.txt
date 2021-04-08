@@ -5,12 +5,14 @@ project(Remesher)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext)
+
 find_package(Threads REQUIRED)
 find_package(Eigen3 REQUIRED)
 
 include_directories(
 	# libigl
-	${CMAKE_CURRENT_SOURCE_DIR}/libigl/include
+	${EXT_DIR}/libigl/include
 	)
 
 add_executable(remeshmesh
