@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.10)
 
 project(Remesher)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-
+set(CMAKE_BUILD_TYPE "Release")
+#set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(EXT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/ext)
 
 find_package(Threads REQUIRED)
@@ -15,7 +16,11 @@ include_directories(
 	${EXT_DIR}/libigl/include
 	)
 
-add_executable(remeshmesh
+list(APPEND CMAKE_MODULE_PATH ${EXT_DIR}/numpyeigen/cmake)
+include(numpyeigen)
+
+add_library(remesh
+	SHARED
 
 	# Headers
 	src/collapse_edges.h
@@ -26,7 +31,6 @@ add_executable(remeshmesh
 	src/tangential_relaxation.h
 
 	# Source
-	remeshmesh.cpp
 	src/collapse_edges.cpp
 	src/equalize_valences.cpp
 	src/remesh_botsch.cpp
@@ -37,4 +41,15 @@ add_executable(remeshmesh
 	)
 
 
-target_link_libraries(remeshmesh Threads::Threads Eigen3::Eigen)
+target_link_libraries(remesh Threads::Threads Eigen3::Eigen)
+
+add_executable(remeshmesh remeshmesh.cpp)
+target_link_libraries(remeshmesh remesh)
+
+npe_add_module(pyremesh
+	BINDING_SOURCES
+	src/bindings.cpp
+)
+
+target_include_directories(pyremesh PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_link_libraries(pyremesh PUBLIC remesh)
