@@ -21,17 +21,15 @@ void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & ta
 
     // Iterate the four steps
     for (int i = 0; i<iters; i++) {
-    split_edges_until_bound(V,F,feature,high,low); // Split
-    collapse_edges(V,F,feature,high,low); // Collapse
-    equalize_valences(V,F,feature); // Flip
-    int n = V.rows();
-    lambda = Eigen::VectorXd::Constant(n,0.01);
-    F0 = F;
-    V0 = V;
-    tangential_relaxation(V,F,feature,V0,F0,lambda); // Relax
+    	split_edges_until_bound(V,F,feature,high,low); // Split
+    	collapse_edges(V,F,feature,high,low); // Collapse
+    	equalize_valences(V,F,feature); // Flip
+    	int n = V.rows();
+    	lambda = Eigen::VectorXd::Constant(n,0.01);
+    	F0 = F;
+    	V0 = V;
+    	//tangential_relaxation(V,F,feature,V0,F0,lambda); // Relax
     }
-
-
 }
 
 void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & target,int iters){
