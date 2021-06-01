@@ -6,6 +6,11 @@ a Matlab mex function and a python function.
 
 ## Installation
 
+Clone this repo and its submodules:
+```
+git clone --recursive git@github.com:bathal1/botsch-kobbelt-remesher-libigl.git
+```
+
 To build this project, do the usual CMake dance:
 
 ```
