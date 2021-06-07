@@ -29,7 +29,7 @@
 using namespace std;
 
 void split_edges_until_bound(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & feature, Eigen::VectorXd & high, Eigen::VectorXd & low){
-    
+
     using namespace Eigen;
     int m = F.rows();
     int n = V.rows();
@@ -46,20 +46,20 @@ void split_edges_until_bound(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::Vec
     igl::unique_edge_map(F,E,uE,EMAP,uE2E);
     int k = uE.rows();
     //std::cout << "Start split_edges_until_bound" << std::endl;
-    
-    
+
+
     for (int s = 0; s < num_feat; s++) {
         is_feature_vertex[feature(s)] = true;
        // is_feature_vertex_vec(feature(s)) = 1;
     }
-    
+
     bool keep_splitting = true;
     std::vector<int> edges_to_split;
-    
+
     while (keep_splitting) {
         //std::cout << "A" << std::endl;
         edges_to_split.resize(0);
-        
+
         for (int i = 0; i < uE.rows(); i++) {
             //std::cout << "B" << std::endl;
             if (!is_feature_vertex[uE(i,0)] && !is_feature_vertex[uE(i,1)] && uE2E[i].size()==2) {
@@ -70,16 +70,16 @@ void split_edges_until_bound(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::Vec
                 }
             }
         }
-        
+
         //std::cout << "B" << std::endl;
-        
+
         //std::cout << "D" << std::endl;
         if(edges_to_split.size()==0){
             keep_splitting = false;
         }else{
             // SPLIT EDGES IN VECTOR edges_to_split
             //
-            
+
             //std::cout << "Before call to split_edges" << std::endl;
             //std::cout << edges_to_split.size() << std::endl;
             split_edges(V,F,E,uE,EMAP,uE2E,high,low,edges_to_split);
@@ -87,14 +87,14 @@ void split_edges_until_bound(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::Vec
             //igl::unique_edge_map(F,E,uE,EMAP,uE2E);
             //std::cout << igl::is_edge_manifold(F) << std::endl;
             //std::cout << "After call to split_edges" << std::endl;
-            
+
         }
-        
-        
+
+
        keep_splitting = false; // THIS IS A PATCH, NOT GOOD
     }
-    
-    
+
+
 }
 
 

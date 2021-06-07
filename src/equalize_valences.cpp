@@ -31,9 +31,9 @@ void equalize_valences(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi 
     Eigen::VectorXi EMAP;
     std::vector<std::vector<int>> uE2E,A;
     igl::unique_edge_map(F,E,uE,EMAP,uE2E);
-    
-    
-    
+
+
+
     int m = F.rows();
     int n = V.rows();
     int a,b,c,d;
@@ -41,7 +41,7 @@ void equalize_valences(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi 
     VectorXi vertex_valences;
 //
     vertex_valences.setZero(n);
-    
+
    // std::cout << "A" << std::endl;
     for(int j = 0; j < m; j++){
         vertex_valences(F(j,0)) = vertex_valences(F(j,0))+1;
@@ -49,22 +49,22 @@ void equalize_valences(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi 
         vertex_valences(F(j,2)) = vertex_valences(F(j,2))+1;
     }
  //   std::cout << vertex_valences << std::endl;
-    
+
 //
     int k = uE.rows();
     int num_feat = feature.size();
     is_feature_vertex.resize(n);
-    
+
    // std::cout << "B" << std::endl;
-    
+
     for (int s = 0; s < num_feat; s++) {
         is_feature_vertex[feature(s)] = true;
     }
-    
-    
+
+
 //
   //  std::cout << "C" << std::endl;
-    
+
     std::function<void(
             Eigen::MatrixXi &, //F
             Eigen::MatrixXi &, //E
@@ -87,9 +87,9 @@ void equalize_valences(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi 
         int c2 = half_edges[1] / num_faces;
         assert(c1 < 3);
         assert(c2 < 3);
-        
-        
-        
+
+
+
         assert(f1 != f2);
         int v1 = F(f1, (c1+1)%3);
         int v2 = F(f1, (c1+2)%3);
@@ -111,7 +111,7 @@ void equalize_valences(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi 
           double s2 = (a2+b2+c22)/2;
           double area_2_squared = s2*(s2-a2)*(s2-b2)*(s2-c22);
           bool bad = false;
-          
+
           Eigen::RowVector3d v21,v31,v41,v24,v34,v43,v23,normf10,normf11,
                   normf12,normf20,normf21,normf22;
           v21 = V.row(v2)-V.row(v1);
@@ -133,7 +133,7 @@ void equalize_valences(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi 
           normf20.normalize();
           normf21.normalize();
           normf22.normalize();
-          
+
           if (normf10.dot(normf11) < normf11.norm()/2 || normf10.dot(normf12) < normf12.norm()/2) {
               bad = true;
           }
@@ -147,16 +147,16 @@ void equalize_valences(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi 
         if (area_2_squared == 0) {
             bad = true;
         }
-                
+
                 if(std::count(A[v3].begin(),A[v3].end(),v4)){
                     bad = true; // is it gonna generate non-manifold??
                 }
-        
+
         if(uE2E[uei].size() != 2){
             bad = true;
             }
-        
-        
+
+
          if (!bad){
              //std::cout << "D1" << std::endl;
         igl::flip_edge(F,E,uE,EMAP,uE2E,uei);
@@ -164,34 +164,34 @@ void equalize_valences(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi 
         //std::cout << "Lambda call test" << std::endl;
         assert(uE(uei,0)==v3);
         assert(uE(uei,1)==v4);
-        
+
       //  std::cout << "updating_valences" << std::endl;
         vertex_valences(v1) = vertex_valences(v1)-1;
         vertex_valences(v2) = vertex_valences(v2)-1;
         vertex_valences(v3) = vertex_valences(v3)+1;
         vertex_valences(v4) = vertex_valences(v4)+1;
-             
+
              std::remove_if(A[v1].begin(),A[v1].begin(),[&v2](const int & v){return v==v2;});
              std::remove_if(A[v2].begin(),A[v2].begin(),[&v1](const int & v){return v==v1;});
              A[v3].push_back(v4);
              A[v4].push_back(v3);
-             
+
          }
         //std::cout << "Lambda call end" << std::endl;
     };
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
     //std::cout << "D" << std::endl;
-    
-    
+
+
     for(int i = 0; i < k; i++){
         //std::cout << uE2E[i].size() << std::endl;
         if(uE2E[i].size()!=2){
@@ -214,7 +214,7 @@ void equalize_valences(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi 
             is_feature_edge = true;
         }
         //std::cout << "E" << std::endl;
-        
+
         if(!is_feature_edge){
             // FIND VALENCES
             int deviation_pre = abs(vertex_valences(a)-6)+
@@ -230,22 +230,22 @@ void equalize_valences(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi 
             // std::cout << i << std::endl;
        //     std::cout << deviation_pre << std::endl;
        //     std::cout << deviation_post << std::endl;
-            
+
             if(deviation_pre > deviation_post){
                 flip_edge_adjacency(F,E,uE,EMAP,uE2E,i);
             }
- 
+
         }
-        
+
         //std::cout << uE.row(i+1) << std::endl;
     }
 //    std::cout << flipped << std::endl;
 //    std::cout << k << std::endl;
 //
-  
-    
-    
-    
+
+
+
+
     // PLACEHOLDER
 }
 

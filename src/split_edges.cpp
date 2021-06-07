@@ -27,11 +27,11 @@ using namespace std;
 
 void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0, Eigen::MatrixXi & uE, Eigen::VectorXi & EMAP0, std::vector<std::vector<int>> & uE2E,Eigen::VectorXd & high, Eigen::VectorXd & low,const std::vector<int> & edges_to_split){
     using namespace Eigen;
-    
+
     Eigen::VectorXi EMAP;
     Eigen::MatrixXi E;
-    
-    
+
+
     // These are the sizes *before* the splits.
     const int n = V.rows();
     const int m = F.rows();
@@ -39,7 +39,7 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
     const int k = uE.rows();
     const int num_edges_to_split = edges_to_split.size();
     // Used for assignments later
-    
+
     // I don't really know how to get rid of this :'(
     for (int j = 0; j<r; j++) {
         int add0 = 0;
@@ -60,7 +60,7 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
         uE2E[j][1] = uE2E[j][1]+add1;
     }
     // I guess it only adds more linear time...
-    
+
     // These are the sizes *after* the splits.
     int num_faces = m+2*num_edges_to_split;
     int num_vertices = n+num_edges_to_split;
@@ -69,7 +69,7 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
     int num_E = E0.rows()+6*num_edges_to_split;
     int num_EMAP = EMAP0.size()+6*num_edges_to_split;
     // Used for indexing and labeling.
-    
+
     F.conservativeResize(num_faces,3);
     V.conservativeResize(num_vertices,3);
     high.conservativeResize(num_vertices);
@@ -79,7 +79,7 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
     val.push_back(0);
     val.push_back(0);
     uE2E.resize(num_uE2E,val);
-    
+
     // INITIALIZE E and EMAP!!!!!
 
     E.resize(num_E,2);
@@ -98,12 +98,12 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
     EMAP.segment(num_faces,m) = EMAP0.segment(m,m);
     // std::cout << "debug" << std::endl;
     EMAP.segment(2*num_faces,m) = EMAP0.segment(2*m,m);
-    
-    
+
+
     for (int i = 0; i<num_edges_to_split; i++) {
-        
-        
-        
+
+
+
         int uei = edges_to_split[i];
         assert(uE2E[uei].size()==2);
         //          v1
@@ -114,21 +114,21 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
         //         \ | /
         //          \|/
         //          v2
-        
+
         int e0 = uE2E[uei][0];
         int e1 = uE2E[uei][1];
-        
+
         int f0 = e0 % num_faces;
         int f1 = e1 % num_faces;
         int c0 = e0 / num_faces;
         int c1 = e1 / num_faces;
-        
+
         // Order of edges: anti-clockwise starting at v1
         int e2 = f1+((c1+1)%3)*num_faces;
         int e3 = f1+((c1+2)%3)*num_faces;
         int e4 = f0+((c0+1)%3)*num_faces;
         int e5 = f0+((c0+2)%3)*num_faces;
-        
+
         int ue2 = EMAP(e2);
         int ue3 = EMAP(e3);
         int ue4 = EMAP(e4);
@@ -138,12 +138,12 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
 //        std::cout << uei << std::endl;
         assert(EMAP(e0)==uei);
         assert(EMAP(e1)==uei);
-        
+
         int v1 = F(f0, (c0+1)%3);
         int v2 = F(f0, (c0+2)%3);
         int v4 = F(f0, c0);
         int v3 = F(f1, c1);
-        
+
         // Assertions for debugging
         // I think I can actually just "imagine" E existing? Actually no.
 //        std::cout << "break" << std::endl;
@@ -164,24 +164,24 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
         assert(E(e0,1)==v2);
         assert(E(e1,0)==v2);
         assert(E(e1,1)==v1);
-        
-        
-        
+
+
+
         assert(c0 < 3);
         assert(c1 < 3);
 
         assert(f0 != f1);
-        
+
         // *** UPDATE V ***
-        
+
         // naïve: use mid-point
         V.row(n+i) = (V.row(v1)+V.row(v2))/2;
         high(n+i) = (high(v1)+high(v2))/2;
         low(n+i) = (low(v1)+low(v2))/2;
         // *** UPDATE F ***
-        
+
         // f0
-        
+
         F(f0,c0) = v4; // redundant
         F(f0,(c0+1)%3) = v1;
         F(f0,(c0+2)%3) = n+i; // new vertex
@@ -212,8 +212,8 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
         // k+2
         uE(k+(3*i)+2,0) = n+i;
         uE(k+(3*i)+2,1) = v2;
-        
-        
+
+
         // *** UPDATE uE2E ***
 //        for (int j = 0; j<uE2E.size(); j++) {
 //        std::cout << uE2E[j][0] << std::endl;
@@ -223,10 +223,10 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
         uE2E[uei][0] = e0;
         uE2E[uei][1] = e1;
         // k
-        
+
         uE2E[k+(3*i)][0] = f1 + ((c1+2)%3)*num_faces;
         uE2E[k+(3*i)][1] = m+(2*i) + 0*num_faces;
-        
+
         // k+1
         uE2E[k+(3*i)+1][0] = f0 + ((c0+1)%3)*num_faces;
         uE2E[k+(3*i)+1][1] = m+(2*i)+1 + 0*num_faces;
@@ -234,7 +234,7 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
         uE2E[k+(3*i)+2][0] = m+(2*i) + 2*num_faces;
         uE2E[k+(3*i)+2][1] = m+(2*i)+1 + 1*num_faces;
         // ue2
-        
+
         if(uE2E[ue2][0]==e2){
             uE2E[ue2][0] = f1 + ((c1+1)%3)*num_faces;
         }else{
@@ -264,7 +264,7 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
         }
         // *** UPDATE E ***
         // edges in f0
-        
+
         E(f0 + ((c0)%3)*num_faces,0) = v1;
         E(f0 + ((c0)%3)*num_faces,1) = n+i;
         E(f0 + ((c0+1)%3)*num_faces,0) = n+i;
@@ -292,7 +292,7 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
         E(m+(2*i)+1 + 1*num_faces,1) = v2;
         E(m+(2*i)+1 + 2*num_faces,0) = v2;
         E(m+(2*i)+1 + 2*num_faces,1) = v4;
-        
+
         // *** UPDATE EMAP ***
         // edges in f0
         EMAP(f0 + ((c0)%3)*num_faces) = uei;
@@ -310,13 +310,13 @@ void split_edges(Eigen::MatrixXd & V, Eigen::MatrixXi & F, Eigen::MatrixXi & E0,
         EMAP(m+(2*i)+1 + 0*num_faces) = k+(3*i)+1;
         EMAP(m+(2*i)+1 + 1*num_faces) = k+(3*i)+2;
         EMAP(m+(2*i)+1 + 2*num_faces) = ue4;
-        
-    }
-    
-    
-    
 
-    
+    }
+
+
+
+
+
     E0 = E;
     EMAP0 = EMAP;
 }
