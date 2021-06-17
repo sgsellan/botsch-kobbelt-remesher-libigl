@@ -6,6 +6,7 @@
 #include <igl/per_face_normals.h>
 #include <igl/barycenter.h>
 #include <igl/pinv.h>
+#include <igl/writeOBJ.h>
 #include <igl/edges.h>
 #include <Eigen/SparseCore>
 #include <igl/adjacency_list.h>
@@ -92,8 +93,8 @@ void tangential_relaxation(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::Vecto
                 } // q is )( barycenter?
             // q = q/denominator;
             // N.row(i) = N.row(i)/N.row(i).norm();
-            NN = lambda(i)*N.row(i).transpose()*(N.row(i));
-             p = (q.transpose()+(NN*(V.row(i).transpose() - q.transpose()))).transpose();
+            NN = lambda(i)*(Eigen::MatrixXd::Identity(3,3) - N.row(i).transpose()*(N.row(i)));
+             p = (V.row(i).transpose()-(NN*(V.row(i).transpose() - q.transpose()))).transpose();
             // p = q;
              // std::cout << N.row(i) << std::endl;
 
@@ -111,10 +112,13 @@ void tangential_relaxation(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::Vecto
         }
 //        igl::remove_duplicate_vertices(V,0,SV,SVI,SVJ);
 //        std::cout << V.rows()-SV.rows() << std::endl;
-        igl::point_mesh_squared_distance(V,V0,F0,sqrD,sqrI,V_projected);
-
-
+//	igl::writeOBJ("pre-project.obj",V,F);
+//
+	igl::point_mesh_squared_distance(V,V0,F0,sqrD,sqrI,V_projected);
+//
+//
     V = V_projected;
+//	igl::writeOBJ("post-project.obj",V,F);
 //    igl::remove_duplicate_vertices(V,0,SV,SVI,SVJ);
 //    std::cout << V.rows()-SV.rows() << std::endl;
  //   std::cout << "not projecting!" << std::endl;

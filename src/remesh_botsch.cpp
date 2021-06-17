@@ -27,7 +27,7 @@ void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & ta
     	collapse_edges(V,F,feature,high,low); // Collapse
     	equalize_valences(V,F,feature); // Flip
     	int n = V.rows();
-    	lambda = Eigen::VectorXd::Constant(n,0.01);
+    	lambda = Eigen::VectorXd::Constant(n,1.0);
 	if(!project){
 		V0 = V;
 		F0 = F;
