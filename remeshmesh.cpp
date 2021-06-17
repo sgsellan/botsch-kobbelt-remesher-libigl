@@ -11,6 +11,7 @@ int main(int argc, const char* argv[]){
     Eigen::VectorXd target;
     Eigen::MatrixXi F;
     string in,out;
+    bool project = false;
     int iterations = 10;
     double h = 0.05;
     out = "output.obj";
@@ -38,12 +39,16 @@ and ext can be either of obj, ply, off, stl or mesh.
 			    h = atof(argv[argindex+2]);
 		            argindex = argindex+2;
 		    }else{
+		    if(strncmp(argv[argindex+1],"-p",2)==0){
+			    project = true;
+		            argindex = argindex+1;
+		    }else{
 		    	    out = argv[argindex+1];
 		            argindex = argindex+1;
-		    }}
+		    }}}
 	    }
     igl::read_triangle_mesh(in,V,F);
     target = Eigen::VectorXd::Constant(V.rows(),h);
-    remesh_botsch(V,F,target,iterations);
+    remesh_botsch(V,F,target,iterations,project);
     igl::write_triangle_mesh(out,V,F);
 }

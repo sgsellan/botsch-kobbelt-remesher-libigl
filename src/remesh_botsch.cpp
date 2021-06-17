@@ -11,7 +11,7 @@
 #include <igl/avg_edge_length.h>
 #include <iostream>
 
-void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & target,int iters, Eigen::VectorXi & feature){
+void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & target,int iters, Eigen::VectorXi & feature, bool project){
     Eigen::MatrixXd V0;
     Eigen::MatrixXi F0;
 
@@ -28,14 +28,28 @@ void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & ta
     	equalize_valences(V,F,feature); // Flip
     	int n = V.rows();
     	lambda = Eigen::VectorXd::Constant(n,0.01);
-		tangential_relaxation(V,F,feature,V0,F0,lambda); // Relax
+	if(!project){
+		V0 = V;
+		F0 = F;
+	}
+	tangential_relaxation(V,F,feature,V0,F0,lambda); // Relax
     }
+}
+
+void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & target,int iters, Eigen::VectorXi & feature){
+remesh_botsch(V,F,target,iters,feature,false);
 }
 
 void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & target,int iters){
 	Eigen::VectorXi feature;
 	feature.resize(0);
 	remesh_botsch(V,F,target,iters,feature);
+}
+
+void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & target,int iters, bool project){
+	Eigen::VectorXi feature;
+	feature.resize(0);
+	remesh_botsch(V,F,target,iters,feature,project);
 }
 
 void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXd & target){
@@ -50,6 +64,15 @@ void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, double target_double
 	int n = V.rows();
 	target = Eigen::VectorXd::Constant(n,target_double);
 	remesh_botsch(V,F,target,iters,feature);
+}
+
+void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, double target_double,int iters, bool project){
+	Eigen::VectorXi feature;
+	feature.resize(0);
+	Eigen::VectorXd target;
+	int n = V.rows();
+	target = Eigen::VectorXd::Constant(n,target_double);
+	remesh_botsch(V,F,target,iters,feature,project);
 }
 
 void remesh_botsch(Eigen::MatrixXd & V,Eigen::MatrixXi & F, double target_double){

@@ -30,9 +30,11 @@ system PATH and PYTHONPATH environment variables.
 To run in command line, issue
 ```
 remeshmesh [input.ext] [output.ext] [-i num_iterations] [-h target_edge_length]
+[-p]
 ```
 The mesh in input.obj must be closed and manifold. `ext` can be any of `obj`,
-`mesh`, `off`, `ply` and `stl`.
+`mesh`, `off`, `ply` and `stl`. `-p` tells the remesher to project to the
+original mesh.
 
 To use within your own C++ code, simply the header files in `src/` and
 use the function `remesh_botsch` as shown in `remesmesh.cpp`.
