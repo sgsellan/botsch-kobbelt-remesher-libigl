@@ -25,6 +25,7 @@
 #include <igl/decimate.h>
 #include <igl/shortest_edge_and_midpoint.h>
 #include <igl/infinite_cost_stopping_condition.h>
+#include <igl/decimate_callback_types.h>
 using namespace std;
 
 void collapse_edges(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & feature, Eigen::VectorXd & high, Eigen::VectorXd & low){
@@ -55,41 +56,20 @@ void collapse_edges(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & f
 
     //igl::is_edge_manifold(F);
 
-    std::function<bool(
-                       const Eigen::MatrixXd &,
-                       const Eigen::MatrixXi &,
-                       const Eigen::MatrixXi &,
-                       const Eigen::VectorXi &,
-                       const Eigen::MatrixXi &,
-                       const Eigen::MatrixXi &,
-                       const std::set<std::pair<double,int> > &,
-                       const std::vector<std::set<std::pair<double,int> >::iterator > &,
-                       const Eigen::MatrixXd &,
-                       const int,
-                       const int,
-                       const int,
-                       const int,
-                       const int)>  stopping_condition;
+    igl::decimate_stopping_condition_callback stopping_condition;
 
-    std::function<void(
-                       const int,
-                       const Eigen::MatrixXd &,
-                       const Eigen::MatrixXi &,
-                       const Eigen::MatrixXi &,
-                       const Eigen::VectorXi &,
-                       const Eigen::MatrixXi &,
-                       const Eigen::MatrixXi &,
-                       double &,
-                       Eigen::RowVectorXd &)> shortest_edge_and_midpoint_lambda = [&A,&feature,&low,&high,&is_feature_vertex](
-                                                                 const int e,
-                                                                 const Eigen::MatrixXd & V,
-                                                                 const Eigen::MatrixXi & F,
-                                                                 const Eigen::MatrixXi & E,
-                                                                 const Eigen::VectorXi & EMAP,
-                                                                 const Eigen::MatrixXi & EF,
-                                                                 const Eigen::MatrixXi & EI,
-                                                                 double & cost,
-                                                                 Eigen::RowVectorXd & p)->void{
+    igl::decimate_cost_and_placement_callback shortest_edge_and_midpoint_lambda =
+        [&A,&feature,&low,&high,&is_feature_vertex](
+            const int e,
+            const Eigen::MatrixXd & V,
+            const Eigen::MatrixXi & F,
+            const Eigen::MatrixXi & E,
+            const Eigen::VectorXi & EMAP,
+            const Eigen::MatrixXi & EF,
+            const Eigen::MatrixXi & EI,
+            double & cost,
+            Eigen::RowVectorXd & p)
+    {
         igl::shortest_edge_and_midpoint(e,V,F,E,EMAP,EF,EI,cost,p);
         if (is_feature_vertex[E(e,0)] || is_feature_vertex[E(e,1)] ) {
             cost = std::numeric_limits<double>::infinity();
