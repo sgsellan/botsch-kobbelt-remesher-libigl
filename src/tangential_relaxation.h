@@ -4,7 +4,7 @@
 
 
 #include <Eigen/Core>
-
+__declspec(dllexport)
 void tangential_relaxation(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & feature,
 Eigen::MatrixXd & V0 ,Eigen::MatrixXi & F0, Eigen::VectorXd & lambda);
 

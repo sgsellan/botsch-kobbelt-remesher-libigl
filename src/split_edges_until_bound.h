@@ -4,7 +4,7 @@
 
 
 #include <Eigen/Core>
-
+__declspec(dllexport)
 void split_edges_until_bound(Eigen::MatrixXd & V,Eigen::MatrixXi & F, Eigen::VectorXi & feature, Eigen::VectorXd & high, Eigen::VectorXd & low);
 
 
