@@ -1,8 +1,9 @@
 # Libigl Botsch-Kobbelt Local Remesher
+
 Implementation of the local remesher from "A Remeshing Approach to
 Multiresolution Modeling" by M. Botsch and L. Kobbelt, to work with the libigl
 geometry processing library. Can be used as a Command Line Tool, a C++ function,
-a Matlab mex function and a python function.
+a Matlab mex function and a python function. Python bindings can be built from this repository, or found as part of [gpytoolbox](https://github.com/sgsellan/gpytoolbox)
 
 ## Installation
 
