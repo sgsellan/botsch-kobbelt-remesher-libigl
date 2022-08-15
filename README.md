@@ -5,6 +5,10 @@ Multiresolution Modeling" by M. Botsch and L. Kobbelt, to work with the libigl
 geometry processing library. Can be used as a Command Line Tool, a C++ function,
 a Matlab mex function and a python function. Python bindings can be built from this repository, or found as part of [gpytoolbox](https://github.com/sgsellan/gpytoolbox)
 
+# Important note
+
+An up-to-date, maintained version of this code is implemented into our new python geometry processing library [Gpytoolbox](https://gpytoolbox.org). See the remesher documentation and examples [here](https://gpytoolbox.org/remesh_botsch/).
+
 ## Installation
 
 Clone this repo and its submodules:
