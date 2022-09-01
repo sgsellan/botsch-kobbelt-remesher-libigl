@@ -25,6 +25,21 @@ cmake ..
 make -j
 ```
 
+### Installing on Windows
+
+The usual CMake dance changes a little on Windows. Instead of using `make -j`, on Windows, CMake will produce a visual studio solution that you can use to build the project. The following procedure was tested on Windows 10 using Visual Studio 2022.
+
+1. Open the Remesher.sln solution in Visual Studio.
+2. Build the `ALL_BUILD` project.
+3. The `.pyd` file will be in `build/[Debug OR Release]`. Add this directory to your path.
+
+#### Troubleshooting
+
+- The `remesh` project needs to output a static library (`.lib`) but by default may output a dynamic library (`.dll`). To fix this, open the project properties and change `Configuration Properties > General > Configuration Type` to `Static Library (.lib)` and change `Configuration Properties > Advanced > Target File Extension` to `.lib`.
+- The `pyremesh` project needs to find python on the path to build. The simplest (but probably wrong) way seems to be: disable the `python` execution alias in `System Settings > Manage App Execution Aliases` (OS settings, not visual studio). And then manually add a python executable to the system path.
+- There is currently [a pybind11 bug](https://github.com/pybind/pybind11/issues/3459) that causes errors on debug builds. Simplest fix: build with a Release config.
+
+
 ### Setting the Path
 
 Once you built the project, a script `setpath.sh` will be copied to your build
